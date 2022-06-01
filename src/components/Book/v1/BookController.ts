@@ -3,7 +3,6 @@ import _ from 'underscore';
 import { v4 as uuidv4 } from 'uuid';
 import customRequest from '../../../environment';
 import BookModel from '../model/BookModel';
-import AuthorBookModel from '../../Author/model/AuthorBookModel';
 import sequelize from '../../../utils/mysql';
 import { Author, AuthorBook } from '../../Author/schema'
 
@@ -12,6 +11,7 @@ import { Author, AuthorBook } from '../../Author/schema'
 class BookController {
 
     async AddBook(req: customRequest, res: Response) {
+
         const transactionVar = await sequelize.transaction();
 
         try {
@@ -54,19 +54,17 @@ class BookController {
                 deletedAt: null
             }
 
-            const BookAttributes = ["name","language"]
+            let BookAttributes = ['id','name', 'language', 'publisher', 'edition', 'publishYear'];
             let other = {
                 include: [
                     {
                         model: Author,
-                        attributes: ['uuid', 'firstName', 'lastName', 'email'],
+                        attributes: ['firstName', 'lastName', 'email'],
                         through: { attributes: [] }
                     }
-                ]    };
-            const Books = await BookModel.getMany(condition, BookAttributes, other);
+                ]};
 
-            console.log(Books);
-            
+            const Books = await BookModel.getMany(condition, BookAttributes, other);
             res.json(Books);
             
         } catch (error) {
@@ -84,8 +82,18 @@ class BookController {
                 uuid: uuid,
                 deletedAt: null
             }
+            let BookAttributes = ['id','name', 'language', 'publisher', 'edition', 'publishYear'];
+            let other = {
+                include: [
+                    {
+                        model: Author,
+                        attributes: ['firstName', 'lastName', 'email'],
+                        through: { attributes: [] }
+                    }
+                ]};
 
-            const Book = await BookModel.getSingleWithCondition(condition);
+            const Book = await BookModel.getSingleWithCondition(condition, BookAttributes, other);
+
             res.json(Book);
             
         } catch (error) {
@@ -136,7 +144,7 @@ class BookController {
 
     }
 
-    
+
 
 }
 
