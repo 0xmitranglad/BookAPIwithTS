@@ -56,6 +56,20 @@ class BookModel {
             return false;
         }
     }
+
+    async delete(post_uuid: string, transaction?: Transaction | undefined) {
+        try {
+            let deleteCount = await Book.destroy({
+                where: {
+                    uuid: post_uuid
+                },
+                transaction: transaction ? transaction : undefined
+            });
+            return deleteCount;
+        } catch (err) {
+            throw err;
+        }
+    }    
 }
 
 export default new BookModel();

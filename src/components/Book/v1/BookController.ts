@@ -3,8 +3,9 @@ import _ from 'underscore';
 import { v4 as uuidv4 } from 'uuid';
 import customRequest from '../../../environment';
 import BookModel from '../model/BookModel';
+import AuthorBookModel from '../../Author/model/AuthorBookModel';
 import sequelize from '../../../utils/mysql';
-import { Author, AuthorBook } from '../../Author/schema'
+import { Author } from '../../Author/schema';
 
 
 
@@ -26,7 +27,7 @@ class BookController {
                 'publishYear'
             );
             body.uuid = uuidv4();
-            var authorId = req.custom?.user?.id;
+            let authorId = req.custom?.user?.id;
             console.log('Author Id ----- from access token');
             console.log(authorId);
             console.log(body);
@@ -142,6 +143,48 @@ class BookController {
             console.log(error);
         }
 
+    }
+
+    async DeleteBook(req: customRequest, res: Response) {
+
+        let authorId = req.custom?.user?.id;
+        
+
+        try {
+            let uuid =req.params.uuid;
+            let condition = {
+                uuid: uuid,
+                deletedAt: null
+            }
+            
+            let matchedBook:any = await BookModel.getSingleWithCondition(condition);
+            console.log('Book Matched');
+            // console.log(matchedBook);
+            if(!matchedBook) {
+                console.log('Book Not Found');
+            }
+
+            // let where = {
+            //     author_id: authorId,
+            //     book_id: matchedBook.id
+            // }
+
+            // let checkAuthorBook = await AuthorBookModel.getSingleWithCondition(where);
+            
+            const delRow = await BookModel.delete(uuid);
+            
+            if(delRow == 0) {
+                console.log('Delete unsuccessful');
+            } else {
+                console.log('Deleted Successfully');
+                res.send(200);
+            }
+            
+
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
