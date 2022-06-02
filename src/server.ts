@@ -6,7 +6,7 @@ const PORT = 3000;
 
 (async () => {
     try {
-        await sequelize.sync({force: true});
+        await sequelize.sync(/* {force: true} */);
         app.listen(PORT, function() {
             console.log(`Listening on port: ${PORT}`);
         });

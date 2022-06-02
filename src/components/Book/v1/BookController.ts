@@ -5,7 +5,10 @@ import customRequest from '../../../environment';
 import { BookModel } from '../model';
 import sequelize from '../../../utils/mysql';
 import { Author } from '../../Author/schema';
+import AuthorBookModel from '../../Author/model/AuthorBookModel';
+import Sequelize, { Transaction } from 'sequelize';
 
+const Op = Sequelize.Op;
 
 
 class BookController {
@@ -117,29 +120,42 @@ class BookController {
             );  
 
             let uuid =req.params.uuid;
-
             var authorId = req.custom?.user?.id;
-
 
             let condition = {
                 uuid: uuid,
                 deletedAt: null
-            }
+            };
+
 
             const Found: any = await BookModel.getSingleWithCondition(condition);
-            
+
             if(Found) {
+                let check = {
+                    [Op.and]: {
+                        author_id: authorId,
+                        book_id: Found.id 
+                    }
+                };
 
-                let UpdateBook = await BookModel.updateOne( uuid, body);
+                //check weather this book is login author's or Not
+                const checkAuthorBook = await AuthorBookModel.getSingleWithCondition(check);
 
-                let newBook = await BookModel.getSingleWithCondition(condition);
-                console.log(UpdateBook);
+                if(checkAuthorBook) {
+                    let UpdateBook = await BookModel.updateOne( uuid, body);
+                    let newBook = await BookModel.getSingleWithCondition(condition);
+                    console.log(UpdateBook);
 
-                res.json(newBook);
-                
+                    res.json(newBook);
+                }
+                else {
+                    console.log('Book does not belongs to the author logged in');
+                }
+
+            } else {
+                console.log('book not found for passed uuid');
             }
             
-
         } catch (error) {
             console.log(error);
         }
@@ -161,18 +177,34 @@ class BookController {
             let matchedBook:any = await BookModel.getSingleWithCondition(condition);
             console.log('Book Matched');
             // console.log(matchedBook);
-            if(!matchedBook) {
-                console.log('Book Not Found');
-            }
 
 
-            const delRow = await BookModel.delete(uuid);
-            
-            if(delRow == 0) {
-                console.log('Delete unsuccessful');
+            if(matchedBook) {
+                let check = {
+                    [Op.and]: {
+                        author_id: authorId,
+                        book_id: matchedBook.id 
+                    }
+                };
+
+                const checkAuthorBook = await AuthorBookModel.getSingleWithCondition(check);
+
+                if(checkAuthorBook) {
+                    
+                    const delRow = await BookModel.delete(uuid);
+                    if(delRow == 0) {
+                            console.log('Delete unsuccessful');
+                    } else {
+                        console.log('Deleted Successfully');
+                        res.send(200);
+                    }
+
+                } else {
+                    console.log('Book does not belongs to the author logged in');
+                }
+
             } else {
-                console.log('Deleted Successfully');
-                res.send(200);
+                console.log('Book Not Found');
             }
             
 
@@ -180,8 +212,6 @@ class BookController {
             console.log(error);
         }
     }
-
-
 
 }
 
