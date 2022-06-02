@@ -2,7 +2,6 @@ import express from "express";
 import BookController from "./BookController";
 import checkAuthentication from '../../../middlewares/authMiddleware'
 
-
 var routers = express.Router();
 
 routers.post('/add', checkAuthentication, BookController.AddBook);

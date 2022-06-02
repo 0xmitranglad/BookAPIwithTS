@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import Book from "../schema/BookSchema";
+import { Book } from "../schema";
 
 class BookModel {
   

@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import _ from 'underscore';
 import { v4 as uuidv4 } from 'uuid';
-import AuthorModel from '../model/AuthorModel';
+import { AuthorModel } from '../model';
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import AuthorValidation from './AuthorValidation';

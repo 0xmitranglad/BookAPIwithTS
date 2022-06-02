@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import Author from './AuthorSchema';
-import Book from '../../Book/schema/BookSchema';
+import { Book } from '../../Book/schema/';
 import sequelize from '../../../utils/mysql';
 
 
@@ -31,28 +31,5 @@ class AuthorBook extends Model {}
         modelName: "AuthorBook",
       }
     );
-  
-    // Author.belongsToMany(Book, {
-    //   through: AuthorBook,
-    //   foreignKey: "author_id",
-    //   otherKey: "book_id",
-    // });
-    // Book.belongsToMany(Author, {
-    //   through: AuthorBook,
-    //   foreignKey: "book_id",
-    //   otherKey: "author_id",
-    // });
-
-    // Author.belongsToMany(Book, {
-    //   through: AuthorBook,
-    //   foreignKey: "authorId",
-    //   otherKey: "bookId",
-    // });
-    // Book.belongsToMany(Author, {
-    //   through: AuthorBook,
-    //   foreignKey: "bookId",
-    //   otherKey: "authorId",
-    // });
-
 
 export default AuthorBook;

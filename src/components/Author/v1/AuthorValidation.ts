@@ -1,12 +1,12 @@
-import AuthorModel from '../model/AuthorModel';
+import { AuthorModel } from '../model';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
 
 
 class AuthorValidation {
-
-    //class Method Authenticate ---------------------
+    
+    //class Method Authenticate
     async authenticate(body: { email: string, password: string}) {
         try {
             

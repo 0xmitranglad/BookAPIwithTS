@@ -1,6 +1,6 @@
 import Author from './AuthorSchema';
 import AuthorBook from './AuthorBookSchema';
-import Book from '../../Book/schema/BookSchema';
+import { Book } from '../../Book/schema';
 
     Author.belongsToMany(Book, {
       through: AuthorBook,

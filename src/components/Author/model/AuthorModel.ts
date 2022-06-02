@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import Author from "../schema/AuthorSchema";
+import { Author } from "../schema";
 
 class AuthorModel {
   

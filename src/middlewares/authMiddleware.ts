@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
-import AuthorModel from '../components/Author/model/AuthorModel'
+import { AuthorModel } from '../components/Author/model'
 import customRequest from './../environment'
 async function checkAuthentication(req: customRequest, res: Response, next: NextFunction) : Promise<any> {
 

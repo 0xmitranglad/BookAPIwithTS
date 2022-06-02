@@ -1,5 +1,5 @@
-import Sequelize, { Transaction } from "sequelize";
-import { Op } from "sequelize";
+import { Transaction } from "sequelize";
+// import { Op } from "sequelize";
 import AuthorBook from "../schema/AuthorBookSchema";
 
 

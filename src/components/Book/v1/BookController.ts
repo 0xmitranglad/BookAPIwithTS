@@ -2,8 +2,7 @@ import {Request, Response} from 'express';
 import _ from 'underscore';
 import { v4 as uuidv4 } from 'uuid';
 import customRequest from '../../../environment';
-import BookModel from '../model/BookModel';
-import AuthorBookModel from '../../Author/model/AuthorBookModel';
+import { BookModel } from '../model';
 import sequelize from '../../../utils/mysql';
 import { Author } from '../../Author/schema';
 
@@ -103,7 +102,7 @@ class BookController {
 
     }
 
-    async UpdateBook(req: Request, res: Response) {
+    async UpdateBook(req: customRequest, res: Response) {
 
         try {
 
@@ -118,6 +117,8 @@ class BookController {
             );  
 
             let uuid =req.params.uuid;
+
+            var authorId = req.custom?.user?.id;
 
 
             let condition = {
@@ -164,13 +165,7 @@ class BookController {
                 console.log('Book Not Found');
             }
 
-            // let where = {
-            //     author_id: authorId,
-            //     book_id: matchedBook.id
-            // }
 
-            // let checkAuthorBook = await AuthorBookModel.getSingleWithCondition(where);
-            
             const delRow = await BookModel.delete(uuid);
             
             if(delRow == 0) {
@@ -180,7 +175,6 @@ class BookController {
                 res.send(200);
             }
             
-
 
         } catch (error) {
             console.log(error);
