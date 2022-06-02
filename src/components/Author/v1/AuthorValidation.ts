@@ -1,13 +1,14 @@
 import { AuthorModel } from '../model';
 import bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { Response } from "express";
+// import * as jwt from 'jsonwebtoken';
 
 
 
 class AuthorValidation {
     
     //class Method Authenticate
-    async authenticate(body: { email: string, password: string}) {
+    async authenticate(body: { email: string, password: string}, res: Response): Promise<any> {
         try {
             
             let condition = {
@@ -35,6 +36,7 @@ class AuthorValidation {
             
         } catch (error) {
             console.log(error);
+            res.status(400).send();
         }
     }
 }

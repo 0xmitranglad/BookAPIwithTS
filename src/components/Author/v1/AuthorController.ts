@@ -2,8 +2,7 @@ import {Request, Response} from 'express';
 import _ from 'underscore';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthorModel } from '../model';
-import * as jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import AuthorValidation from './AuthorValidation';
 
 
@@ -27,11 +26,11 @@ class AuthorController {
             body.uuid = uuidv4();
 
             const Author = await AuthorModel.addOne(body);
-            res.json(Author);
+            res.status(200).json(Author);
 
         } catch (error) {
             console.log(error);
-            res.status(400);
+            res.status(400).send();
         }
     }
 
@@ -40,24 +39,33 @@ class AuthorController {
         try {
             let body: { email: string, password: string} = _.pick(req.body, 'email', 'password');
 
-            if(typeof body.email !== 'string' || typeof body.password !== 'string') {
-                res.status(400);
+            if(_.isString(body.email) && _.isString(body.password)) {
+
+                const author = await AuthorValidation.authenticate(body, res);
+
+                if(author) {
+                    let token = jwt.sign({ uuid: author.uuid }, 'TOKEN_SECRET', { expiresIn: 60 * 60 });
+                    var obj = {accesstoken: token};
+                    const upt = await AuthorModel.updateOne(author.uuid, obj);
+                    if(upt) {
+                        console.log(`login success`);
+                        res.status(200).json(token);
+                    } else {
+                        res.status(400).send();
+                    }
+
+                } else {
+                    res.status(401).send();
+                }
+
+            } else {
+                res.status(400).send();
             }
 
-            const author = await AuthorValidation.authenticate(body);
-
-            let token = jwt.sign({ uuid: author.uuid }, 'TOKEN_SECRET', { expiresIn: 60 * 60 });
-            var obj = {accesstoken: token}
-            const upt = await AuthorModel.updateOne(author.uuid, obj);
-            if(upt) {
-                console.log(`login success`);
-                res.json(token);
-            }  
-
-            console.log(obj);
             
         } catch (error) {
             console.log(error);
+            res.status(500).send();
         }
     }
 
