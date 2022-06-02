@@ -201,7 +201,7 @@ class BookController {
                             res.send(500).send();
                     } else {
                         console.log('Deleted Successfully');
-                        res.send(200).send();
+                        res.status(200).send();
                     }
                 } else {
                     console.log('Book does not belongs to the author logged in');

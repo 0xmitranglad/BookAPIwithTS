@@ -15,6 +15,3 @@ const PORT = 3000;
         process.exit(1);
     }
 })();
-
-
-
